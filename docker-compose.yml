@@ -1,0 +1,30 @@
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  example_db_vol:
+    driver: local
+
+services:
+  app:
+    image: "php:8.3-apache"
+    restart: "always"
+    ports:
+      - "80:80" # 443 => https
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app_network
+#  mysql:
+#    image: "mysql:8"
+#    restart: "always"
+#    ports:
+#      - "33062:3306" # 127.0.0.1:33061
+#    volumes:
+#      - "example_db_vol:/var/lib/mysql"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: secret
+#      MYSQL_DATABASE: php_10_24_db
+#    networks:
+#      - app_network
