@@ -1,7 +1,2 @@
 <?php
-
-if (isset($_GET['info'])) {
-  phpinfo();
-}
-
-die();
+require_once __DIR__ . '/php/test.php';
