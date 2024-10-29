@@ -1,7 +1,3 @@
 <?php
 
-if (isset($_GET['info'])) {
-  phpinfo();
-}
-
-die();
+echo 'hello';
