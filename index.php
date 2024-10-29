@@ -1,3 +1,5 @@
 <?php
 
-phpinfo();
+if (isset($_GET['info'])) {
+  phpinfo();
+}
