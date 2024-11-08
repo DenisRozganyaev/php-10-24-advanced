@@ -3,12 +3,14 @@ networks:
     driver: bridge
 
 volumes:
-  example_db_vol:
+  php_10_24_db_vol:
     driver: local
 
 services:
   app:
-    image: "php:8.3-apache"
+    container_name: php_app
+    build:
+      context: .docker/php
     restart: "always"
     ports:
       - "8081:80" # 443 => https
@@ -16,15 +18,15 @@ services:
       - .:/var/www/html
     networks:
       - app_network
-#  mysql:
-#    image: "mysql:8"
-#    restart: "always"
-#    ports:
-#      - "33062:3306" # 127.0.0.1:33061
-#    volumes:
-#      - "example_db_vol:/var/lib/mysql"
-#    environment:
-#      MYSQL_ROOT_PASSWORD: secret
-#      MYSQL_DATABASE: php_10_24_db
-#    networks:
-#      - app_network
+  mysql:
+    image: "mysql:8"
+    restart: "always"
+    ports:
+      - "33062:3306" # 127.0.0.1:33061
+    volumes:
+      - "php_10_24_db_vol:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: php_10_24_db
+    networks:
+      - app_network
