@@ -1,0 +1,13 @@
+{
+    "name": "root/html",
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "Core\\": "Core/"
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.6",
+        "larapack/dd": "^1.1"
+    }
+}
