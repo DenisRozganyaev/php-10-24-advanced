@@ -6,8 +6,8 @@ use Core\Controller;
 
 class AuthController extends Controller
 {
-    public function register()
+    public function register(int $id)
     {
-
+        dd(__METHOD__, $id);
     }
 }

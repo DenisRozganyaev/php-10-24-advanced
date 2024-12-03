@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use App\Enums\Http\Status;
 use Core\Traits\RouteHttpMethods;
 use Exception;
 
@@ -17,6 +18,11 @@ class Router
      */
     protected array $routes = [], $params = [];
     protected string $currentRoute;
+
+    protected array $convertTypes = [
+        'd' => 'int',
+        '.' => 'string'
+    ];
 
     static public function getInstance(): static
     {
@@ -76,11 +82,60 @@ class Router
     {
         foreach($this->routes as $regex => $params) {
             if (preg_match($regex, $uri, $matches)) {
+                /**
+                 * array:3 [▼
+                 * 0 => "admin/users/25"
+                 * "id" => "25"
+                 * 1 => "25"
+                 * ]
+                 */
+                $this->params = $this->buildParams($regex, $matches, $params);
+                /**
+                 * [
+                 *  'controller' => ...
+                 *  'action' => ....
+                 *  'id' => ...
+                 * ]
+                 */
                 return true;
             }
         }
 
         throw new Exception(__CLASS__ . ": Route [$uri] not found", 404);
+    }
+
+    protected function buildParams(string $regex, array $matches, array $params): array
+    {
+        preg_match_all('/\(\?P<[\w]+>\\\\?([\w\.][\+]*)\)/', $regex, $types);
+
+        if ($types) {
+            $uriParams = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+            $lastKey = array_key_last($types);
+            $step = 0;
+            $types = array_map(
+                fn($value) => str_replace('+', '', $value),
+                $types[$lastKey]
+            );
+
+            foreach ($uriParams as $key => $value) {
+                settype($value, $this->convertTypes[$types[$step]]);
+                $params[$key] = $value;
+                $step++;
+            }
+        }
+
+        return $params;
+    }
+
+    protected function checkHttpMethod(): void
+    {
+        $requestMethod = strtoupper($_SERVER['REQUEST_METHOD']); // GET POST PUT ...
+
+        if ($requestMethod !== $this->params['method']) {
+            throw new Exception("Method [$requestMethod] not allowed!", Status::METHOD_NOT_ALLOWED->value);
+        }
+
+        unset($this->params['method']);
     }
 
     /**
@@ -108,13 +163,41 @@ class Router
         return $router;
     }
 
-    static public function dispatch(string $uri)
+    static public function dispatch(string $uri): string
     {
         $router = static::getInstance();
         $uri = $router->removeQueryVariables($uri);
         $uri = trim($uri, '/');
         if ($router->match($uri)) {
-            dd($uri);
+            $router->checkHttpMethod();
+
+            $controller = new $router->params['controller'];
+            $action = $router->params['action'];
+
+            unset($router->params['controller']);
+            unset($router->params['action']);
+
+            if ($controller->before($action, $router->params)) {
+                $response = call_user_func_array([$controller, $action], $router->params);
+
+                $controller->after($action, $response);
+
+                return jsonResponse(
+                    $response['status'],
+                    [
+                        'data' => $response['body'],
+                        'errors' => $response['errors']
+                    ]
+                );
+            }
         }
+
+        return jsonResponse(
+            Status::INTERNAL_SERVER_ERROR,
+            [
+                'data' => [],
+                'errors' => 'Internal Server Error'
+            ]
+        );
     }
 }
