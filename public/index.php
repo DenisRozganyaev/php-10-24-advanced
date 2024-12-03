@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Http\Status;
 use Core\Router;
 use Dotenv\Dotenv;
 
@@ -12,7 +13,17 @@ try {
 
     require_once BASE_DIR . '/routes/api.php';
 
-    Router::dispatch($_SERVER['REQUEST_URI']);
+    die(Router::dispatch($_SERVER['REQUEST_URI']));
 } catch (Throwable $exception) {
-    dd($exception);
+    die(
+        jsonResponse(
+            $exception->getCode() === 0 ? Status::UNPROCESSABLE_ENTITY : Status::from($exception->getCode()),
+            [
+                'errors' => [
+                    'message' => $exception->getMessage(),
+                    'trace' => $exception->getTrace(),
+                ]
+            ]
+        )
+    );
 }
