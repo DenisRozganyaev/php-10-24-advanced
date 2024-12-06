@@ -8,7 +8,7 @@ return new class implements \App\Commands\Contract\Migration
     */
     public function up(): string
     {
-        return '';
+        return 'INSERT INTO folders (title) VALUES ("General"), ("Shared")';
     }
 
     /**
@@ -17,6 +17,6 @@ return new class implements \App\Commands\Contract\Migration
     */
     public function down(): string
     {
-        return '';
+        return 'DELETE FROM folders WHERE title IN ("General", "Shared")';
     }
 };

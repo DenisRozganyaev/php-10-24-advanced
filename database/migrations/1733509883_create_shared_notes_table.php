@@ -9,14 +9,13 @@ return new class implements \App\Commands\Contract\Migration
     public function up(): string
     {
         return '
-        CREATE TABLE folders (
+        CREATE TABLE shared_notes (
            id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-           user_id INT UNSIGNED DEFAULT NULL,
-           title VARCHAR(255) NOT NULL,
-           created_at DATETIME DEFAULT NOW(),
-           updated_at DATETIME DEFAULT NOW(),
+           user_id INT UNSIGNED NOT NULL,
+           note_id INT UNSIGNED NOT NULL,
            
-           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+           FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE
         );
         ';
     }
@@ -27,6 +26,6 @@ return new class implements \App\Commands\Contract\Migration
     */
     public function down(): string
     {
-        return 'DROP TABLE folders';
+        return 'DROP TABLE shared_notes';
     }
 };

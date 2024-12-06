@@ -16,11 +16,16 @@ return [
             'command' => 'migration:run',
             'description' => 'Run all migrations',
             'arguments' => []
+        ],
+        [
+            'command' => 'migration:rollback',
+            'description' => 'Rollback migrations',
+            'arguments' => []
         ]
     ],
     'commands' => [
         'migration:create' => \App\Commands\Migrations\Create::class,
         'migration:run' => \App\Commands\Migrations\Run::class,
-//        'migration:down' => '',
+        'migration:rollback' => \App\Commands\Migrations\Rollback::class,
     ],
 ];
