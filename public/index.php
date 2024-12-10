@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\Http\Status;
+use App\Enums\SQL;
+use App\Models\User;
 use Core\Router;
 use Dotenv\Dotenv;
 
