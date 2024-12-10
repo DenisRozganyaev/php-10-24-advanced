@@ -170,6 +170,24 @@ trait Queryable
         return $this->where($column, $operator, $value);
     }
 
+    /**
+     * User::select(['email'])->get() => [
+     *  User::obj,
+     * ...
+     * ]
+     * User::select()->pluck('email') => [
+     *  'test@user.com'
+     *  ....
+     * ]
+     * @param string $column
+     * @return array
+     */
+    public function pluck(string $column): array
+    {
+        $result = $this->get();
+        return !empty($result) ? array_map(fn($obj) => $obj->$column, $result) : [];
+    }
+
     public function exists(): bool
     {
         $this->required(['select'], 'Method exists() can not be called without');

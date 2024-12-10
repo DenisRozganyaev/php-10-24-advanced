@@ -21,11 +21,16 @@ return [
             'command' => 'migration:rollback',
             'description' => 'Rollback migrations',
             'arguments' => []
-        ]
+        ],
+        [
+            'command' => 'db:seed',
+            'description' => 'Run database seeds',
+        ],
     ],
     'commands' => [
         'migration:create' => \App\Commands\Migrations\Create::class,
         'migration:run' => \App\Commands\Migrations\Run::class,
         'migration:rollback' => \App\Commands\Migrations\Rollback::class,
+        'db:seed' => \App\Commands\Seed::class,
     ],
 ];
