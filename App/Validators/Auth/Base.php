@@ -14,7 +14,7 @@ abstract class Base extends BaseValidator
 
     static public function checkEmailOnExists(string $email, string $message, bool $eqError = true): bool
     {
-        $result = (bool) User::findBy('email', $email);
+        $result = User::where('email', value: $email)->exists();
 
         if ($result === $eqError) {
             static::setError('email', $message);

@@ -67,7 +67,7 @@ trait Queryable
     static public function findBy(string $column, mixed $value): static|false
     {
         $query = db()->prepare("SELECT * FROM " . static::$tableName . " WHERE $column = :$column");
-        $query->bindParam($column, $value, PDO::PARAM_INT);
+        $query->bindParam($column, $value);
         $query->execute();
 
         return $query->fetchObject(static::class);
