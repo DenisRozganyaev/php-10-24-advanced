@@ -211,9 +211,10 @@ trait Queryable
      * @param string $type
      * @return $this
      */
-    protected function join(string $table, array $conditions, string $type = 'LEFT'): static
+    public function join(string $table, array $conditions, string $type = 'LEFT'): static
     {
         $obj = in_array('select', $this->commands) ? $this : static::select();
+
 
         $obj->required(['select'], 'JOIN can not be called without');
 
@@ -221,7 +222,7 @@ trait Queryable
 
         $conditions = array_map(fn ($condArr) => "$condArr[left] $condArr[operator] $condArr[right]", $conditions);
 
-        static::$query .= " $type JOIN $table ON " . implode(', ', $conditions);
+        static::$query .= " $type JOIN $table ON " . implode(' AND ', $conditions);
 
         return $obj;
     }
