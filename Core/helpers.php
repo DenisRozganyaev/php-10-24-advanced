@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Http\Status;
+use App\Models\Folder;
 use Core\DB;
 use ReallySimpleJWT\Token;
 
@@ -58,4 +59,18 @@ function authId(): int
     }
 
     return (int) $token['user_id'];
+}
+
+function commonFolders(): array
+{
+    $defaults = array_values(Folder::DEFAULTS);
+    $folders = [];
+
+    foreach ($defaults as $folder) {
+        $folders[] = strtoupper($folder);
+        $folders[] = ucfirst($folder);
+        $folders[] = strtolower($folder);
+    }
+
+    return $folders;
 }

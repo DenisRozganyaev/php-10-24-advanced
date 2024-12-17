@@ -6,6 +6,11 @@ use Core\Model;
 
 class Folder extends Model
 {
+    const array DEFAULTS = [
+        'general' => 'General',
+        'shared' => 'Shared',
+    ];
+
     protected static ?string $tableName = 'folders';
 
     public ?int $user_id;
